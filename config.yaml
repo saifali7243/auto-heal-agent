@@ -1,0 +1,10 @@
+cpu_threshold: 85
+
+safe_processes:
+  - "ssh"
+  - "systemd"
+  - "python"
+  - "dockerd"
+
+killable_processes:
+  - "yes"
