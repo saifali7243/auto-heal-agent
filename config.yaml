@@ -8,3 +8,8 @@ safe_processes:
 
 killable_processes:
   - "yes"
+
+critical_processes:
+  - nginx
+  - postgres
+  - docker
