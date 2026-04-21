@@ -1,26 +1,26 @@
-# 🚀 Auto-Healing Infrastructure Agent
+# 🚀 Auto-Heal Agent — Self-Healing Infrastructure Tool
 
 ## 📌 Overview
 
-The **Auto-Healing Infrastructure Agent** is a lightweight DevOps tool that monitors system health and automatically takes corrective actions when anomalies are detected.
+**Auto-Heal Agent** is a lightweight, policy-driven DevOps tool that monitors system health and automatically remediates issues in real time.
 
-It simulates real-world **Site Reliability Engineering (SRE)** practices by enabling systems to recover from failures without manual intervention.
+It simulates real-world **Site Reliability Engineering (SRE)** practices by enabling systems to detect anomalies and take corrective actions without manual intervention.
 
 ---
 
-## 🎯 Problem Statement
+## 🎯 Problem
 
-In production environments, system issues such as:
+In production systems, issues like:
 
 * High CPU usage
-* Memory exhaustion
-* Rogue processes
+* Memory pressure
+* Rogue or runaway processes
 
-require manual debugging and intervention, leading to:
+often require manual debugging and intervention, leading to:
 
 * Increased downtime
+* Slow incident response
 * Operational overhead
-* Slower incident response
 
 ---
 
@@ -28,31 +28,37 @@ require manual debugging and intervention, leading to:
 
 This project implements a **self-healing agent** that:
 
-1. Monitors system metrics in real time
+1. Continuously monitors system metrics
 2. Detects anomalies using rule-based logic
 3. Identifies the root cause (top CPU-consuming process)
-4. Applies safe remediation policies
-5. Logs all actions for auditing
-6. (Optional) Sends real-time alerts
+4. Applies **safe, policy-based remediation**
+5. Logs all actions for observability
+6. Runs as a containerized service
 
 ---
 
 ## ⚙️ Features
 
-* 📊 Real-time system monitoring (CPU, RAM, Disk)
+* 📊 Real-time monitoring (CPU, RAM, Disk)
 * 🧠 Rule-based anomaly detection
 * 🔍 Intelligent process identification
-* 🔐 Safe auto-remediation (whitelist/blacklist)
-* ⏳ Cooldown mechanism to prevent repeated actions
-* 📝 Persistent logging
-* 📲 Alerting support (Telegram-ready)
+* 🔐 Safe remediation with:
+
+  * `critical_processes` (never touched)
+  * `safe_processes` (protected)
+  * `killable_processes` (allowed)
+* ⏳ Cooldown mechanism (prevents repeated kills)
+* 📝 Persistent logging (`logs/system.log`)
+* 🔄 Dynamic config reload (no restart required)
+* 🐳 Dockerized deployment
+* ⚙️ systemd service support
 
 ---
 
 ## 🧱 Architecture
 
 ```text
-Monitor → Rules Engine → Decision Engine → Action Engine → Logging + Alerts
+Monitor → Rules Engine → Decision Engine → Action Engine → Logging
 ```
 
 ---
@@ -60,42 +66,35 @@ Monitor → Rules Engine → Decision Engine → Action Engine → Logging + Ale
 ## 🛠️ Tech Stack
 
 * Python
-* psutil (system monitoring)
+* psutil
 * YAML (config-driven rules)
-* Logging module
-* Requests (for alerts)
+* Docker
+* systemd
 
 ---
 
-## 🚀 How to Run
+## 🚀 Getting Started
 
-### 1. Clone repo
+### 1. Clone repository
 
 ```bash
-git clone https://github.com/<your-username>/auto-heal-agent.git
+git clone git@github.com:saifali7243/auto-heal-agent.git
 cd auto-heal-agent
 ```
 
 ---
 
-### 2. Setup virtual environment
+### 2. Setup environment
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
----
-
-### 3. Install dependencies
-
-```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-### 4. Configure rules
+### 3. Configure rules
 
 Edit `config.yaml`:
 
@@ -109,11 +108,16 @@ safe_processes:
 
 killable_processes:
   - "yes"
+
+critical_processes:
+  - "nginx"
+  - "postgres"
+  - "docker"
 ```
 
 ---
 
-### 5. Run the agent
+### 4. Run locally
 
 ```bash
 python main.py
@@ -121,9 +125,27 @@ python main.py
 
 ---
 
+## 🐳 Run with Docker
+
+```bash
+docker build -t auto-heal-agent .
+docker run -it --pid=host --privileged auto-heal-agent
+```
+
+---
+
+## ⚙️ Run as systemd service
+
+```bash
+sudo systemctl enable auto-heal
+sudo systemctl start auto-heal
+```
+
+---
+
 ## 🧪 Testing
 
-Simulate high CPU usage:
+Simulate high CPU load:
 
 ```bash
 yes > /dev/null &
@@ -132,54 +154,60 @@ yes > /dev/null &
 
 The agent will:
 
-* detect high CPU
-* identify the process
-* safely terminate it (if allowed)
+* detect spike
+* identify process
+* apply safe action
 
 ---
 
 ## 📂 Logs
 
-All actions are recorded in:
-
 ```bash
 logs/system.log
 ```
 
+Tracks:
+
+* detected issues
+* actions taken
+* skipped processes
+
 ---
 
-## 🔐 Safety Features
+## 🔐 Safety Design
 
-* Whitelisted processes are never terminated
-* Only explicitly allowed processes are killed
-* Cooldown prevents repeated actions
-* Config-driven behavior (no hardcoding)
+The system follows strict safety policies:
+
+* Never kills critical system services
+* Only terminates explicitly allowed processes
+* Uses cooldown to prevent instability
+* Fully configurable via YAML
 
 ---
 
 ## 📈 Future Improvements
 
+* Prometheus metrics endpoint
+* Grafana dashboard
 * AI-based anomaly detection
-* REST API (FastAPI)
-* Dashboard (React)
-* Docker support
 * Kubernetes integration
+* REST API (FastAPI)
 
 ---
 
-## 💼 Use Case
-
-This project demonstrates:
+## 💼 What This Project Demonstrates
 
 * DevOps automation
 * Infrastructure monitoring
 * Incident response systems
-* SRE best practices
+* Safe remediation design
+* Containerized deployment
+* SRE thinking
 
 ---
 
 ## 🧠 Author
 
-Built as a hands-on DevOps + SRE project to simulate real-world infrastructure automation.
+Built as a practical DevOps + SRE project to simulate real-world infrastructure automation.
 
 ---
